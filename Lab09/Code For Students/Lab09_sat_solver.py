@@ -14,6 +14,7 @@ def solve_SAT(num_variables, clauses):
     sol= solve_SAT_Recursivo(clauses, asig)
     if sol=="UNSATISFIABLE": return "UNSATISFIABLE"
 
+
     # Asigno a false los valores que no he necesitado asignar
     sol= [0 if value==None else value for value in sol]
     
