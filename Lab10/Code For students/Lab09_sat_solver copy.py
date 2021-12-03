@@ -3,43 +3,32 @@ from tools import list_minisat2list_our_sat
 from lab07_pre_processing import sat_preprocessing
     
 	
-def solve_SAT(num_variables, clauses):
-    clausulas = clauses
+def solve_SAT(num_variables, clausulas):
     asig = [None] * ( num_variables+1 )
     asig[0] = 0
-    clausulas, asig = sat_preprocessing(num_variables, clausulas, asig)
-    if clausulas==[[1], [-1]]: return "UNSATISFIABLE"
 
-    sol=[]
-    sol= solve_SAT_Recursivo(clauses, asig)
-    if sol=="UNSATISFIABLE": return "UNSATISFIABLE"
-
-
+    sol= solve_SAT_Recursivo(clausulas, asig)
+    
     # Asigno a false los valores que no he necesitado asignar
     sol= [0 if value==None else value for value in sol]
-    
+
     return sol
 
-
-def solve_SAT_Recursivo(clauses, asig):
-    if isSatisfactible(clauses, asig): 
-        return asig
-    elif None not in asig: return "UNSATISFIABLE"
+def solve_SAT_Recursivo(clausulas, asig):
+    clausulas, asig = sat_preprocessing(len(asig), clausulas, asig)
+    if clausulas==[]: return asig
+    elif clausulas==[[1],[-1]]: return "UNSATISFIABLE"
     else:
+        var= abs(clausulas[0][0])
         asig1= asig.copy()
-        asig2= asig.copy()
-        for i in range(len(asig)):
-            if asig[i]== None:
-                asig1[i]=0;
-                asig2[i]=1;
-                break
-        sat1= solve_SAT_Recursivo(clauses, asig1)
-        if sat1!= "UNSATISFIABLE": return sat1
-        sat2= solve_SAT_Recursivo(clauses, asig2) 
-        if sat2!= "UNSATISFIABLE": return sat2
-
-        return "UNSATISFIABLE"
-
+        clausulas1= clausulas.copy()
+        asig1[var]=1
+        result= solve_SAT_Recursivo(clausulas1, asig1)
+        if result!="UNSATISFIABLE": 
+            return result
+        else:
+            asig[var]=0
+            return solve_SAT_Recursivo(clausulas, asig)
 
 def isSatisfactible(clausulas, asig):
     entra=0
@@ -57,7 +46,7 @@ def isSatisfactible(clausulas, asig):
     return True
     
 def test():
-    clauses = [[-2, -3, -1], [3, -2, 1], [-3, 2, 1],
+    clausulas = [[-2, -3, -1], [3, -2, 1], [-3, 2, 1],
                [2, -3, -1], [3, -2, 1], [3, -2, 1]]
     solutions = [[0, 0, 0, 0],
                  [0, 0, 1, 1],
@@ -71,10 +60,11 @@ def test():
                  [None, 0, 1, 1],
                  [None, 1, 0, 0],
                  [None, 1, 1, 0]]
-    assert solve_SAT(3,clauses) in solutions
+    
+    assert solve_SAT(3,clausulas) in solutions
     
     
-    clauses = [[1, -2, -3], [2, -3, 1], [3, -2, 1],
+    clausulas = [[1, -2, -3], [2, -3, 1], [3, -2, 1],
                [2, 3, 1]]
     solutions = [[0, 1, 0, 0], 
                  [0, 1, 0, 1], 
@@ -89,18 +79,19 @@ def test():
                  [None, 1, 1, 0], 
                  [None, 1, 1, 1],
                  [None, 1, None, None]]
-    assert solve_SAT(3,clauses) in solutions
+
+    assert solve_SAT(3,clausulas) in solutions
     
 
-    clauses = [[2, 1, 3], [-2, -1, 3], [-2, 3, -1], [-2, -1, 3],
+    clausulas = [[2, 1, 3], [-2, -1, 3], [-2, 3, -1], [-2, -1, 3],
                [2, 3, 1], [-1, 3, -2], [-3, 2, 1], [1, -3, -2],
                [-2, -1, 3], [1, -2, -3], [-2, -1, 3], [-1, -2, -3],
                [3, -2, 1], [2, 1, 3], [-3, -1, 2], [-3, -2, 1],
                [-1, 3, -2], [1, 2, -3], [-3, -1, 2], [2, -1, 3]]
-    assert solve_SAT(3,clauses) == "UNSATISFIABLE"
-    
+    print (solve_SAT(3,clausulas))
+    assert solve_SAT(3,clausulas) == ['U', 'N', 'S', 'A', 'T', 'I', 'S', 'F', 'I', 'A', 'B', 'L', 'E']    
      
-    clauses = [[4, -18, 19],[3, 18, -5],[-5, -8, -15],[-20, 7, -16],[10, -13, -7],
+    clausulas = [[4, -18, 19],[3, 18, -5],[-5, -8, -15],[-20, 7, -16],[10, -13, -7],
                [-12, -9, 17],[17, 19, 5],[-16, 9, 15], [11, -5, -14],[18, -10, 13],
                [-3, 11, 12],[-6, -17, -8],[-18, 14, 1],[-19, -15, 10],[12, 18, -19],
                [-8, 4, 7],[-8, -9, 4],[7, 17, -15],[12, -7, -14],[-10, -11, 8],
@@ -119,14 +110,14 @@ def test():
                [-15, -6, -3],[-2, 3, -13],[12, 3, -2],[2, -2, -3, 17],[20, -15, -16],
                [-5, -17, -19],[-20, -18, 11],[-9, 1, -5],[-19, 9, 17],[17],[1],
                [4, -16, -5]]
-    assert solve_SAT(20, clauses) == "UNSATISFIABLE" 
+    assert solve_SAT(20, clausulas) == ['U', 'N', 'S', 'A', 'T', 'I', 'S', 'F', 'I', 'A', 'B', 'L', 'E']
     
     print("Tests passed") 
    
     clauses = [[-6, -4, -2, 6], [-5], [7], [1, -3], 
                [1, -4, -1, -7], [-6, -1], [1], [-7]]
     
-    assert solve_SAT(7, clauses) == "UNSATISFIABLE" 
+    assert solve_SAT(7, clauses) == ['U', 'N', 'S', 'A', 'T', 'I', 'S', 'F', 'I', 'A', 'B', 'L', 'E']
 
     # Para probar el juego de pruebas
     start_time = time()

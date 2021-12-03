@@ -4,40 +4,37 @@ from lab07_pre_processing import sat_preprocessing
     
 	
 def solve_SAT(num_variables, clauses):
-    clausulas = clauses
     asig = [None] * ( num_variables+1 )
     asig[0] = 0
-    clausulas, asig = sat_preprocessing(num_variables, clausulas, asig)
-    if clausulas==[[1], [-1]]: return "UNSATISFIABLE"
-
-    sol=[]
-    sol= solve_SAT_Recursivo(clauses, asig)
-    if sol=="UNSATISFIABLE": return "UNSATISFIABLE"
-
-
+    sol= solve_SAT_Recursivo(num_variables, clauses, asig)
     # Asigno a false los valores que no he necesitado asignar
-    sol= [0 if value==None else value for value in sol]
-    
-    return sol
+    if sol=="UNSATISFIABLE": return "UNSATISFIABLE"
+    else: 
+        sol= [0 if value==None else value for value in sol]
+        return sol
 
 
-def solve_SAT_Recursivo(clauses, asig):
-    if isSatisfactible(clauses, asig): 
-        return asig
-    elif None not in asig: return "UNSATISFIABLE"
+def solve_SAT_Recursivo(num_variables, clauses, asig):
+    asig0= asig.copy()
+    asig0= [0 if value==None else value for value in asig0]
+    if isSatisfactible(clauses, asig0): 
+        return asig0
+    clauses, asig = sat_preprocessing(num_variables, clauses, asig)
+    if clauses==[[1], [-1]]: 
+        return "UNSATISFIABLE"
+    if clauses==[[]]: return asig
     else:
         asig1= asig.copy()
         asig2= asig.copy()
         for i in range(len(asig)):
             if asig[i]== None:
-                asig1[i]=0;
-                asig2[i]=1;
+                asig1[i]=0 
+                asig2[i]=1
                 break
-        sat1= solve_SAT_Recursivo(clauses, asig1)
+        sat1= solve_SAT_Recursivo(num_variables, clauses, asig1)
         if sat1!= "UNSATISFIABLE": return sat1
-        sat2= solve_SAT_Recursivo(clauses, asig2) 
+        sat2= solve_SAT_Recursivo(num_variables, clauses, asig2)
         if sat2!= "UNSATISFIABLE": return sat2
-
         return "UNSATISFIABLE"
 
 
@@ -57,7 +54,7 @@ def isSatisfactible(clausulas, asig):
     return True
     
 def test():
-    clauses = [[-2, -3, -1], [3, -2, 1], [-3, 2, 1],
+    '''clauses = [[-2, -3, -1], [3, -2, 1], [-3, 2, 1],
                [2, -3, -1], [3, -2, 1], [3, -2, 1]]
     solutions = [[0, 0, 0, 0],
                  [0, 0, 1, 1],
@@ -72,7 +69,7 @@ def test():
                  [None, 1, 0, 0],
                  [None, 1, 1, 0]]
     assert solve_SAT(3,clauses) in solutions
-    
+    '''
     
     clauses = [[1, -2, -3], [2, -3, 1], [3, -2, 1],
                [2, 3, 1]]
@@ -89,6 +86,7 @@ def test():
                  [None, 1, 1, 0], 
                  [None, 1, 1, 1],
                  [None, 1, None, None]]
+    print(solve_SAT(3,clauses))
     assert solve_SAT(3,clauses) in solutions
     
 
@@ -128,14 +126,68 @@ def test():
     
     assert solve_SAT(7, clauses) == "UNSATISFIABLE" 
 
-    ## Para probar el juego de pruebas
-    #tupla = list_minisat2list_our_sat ('instancias/1-unsat.cnf')
-  
+    # Para probar el juego de pruebas
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/1-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("1 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (1): %0.10f seconds.\n" % total_elapsed_time)
     
-    #print(solve_SAT(tupla[0], tupla[1]))
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/2-sat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("2 sat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (2): %0.10f seconds.\n" % total_elapsed_time)
     
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/3-sat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("3 sat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (3): %0.10f seconds.\n" % total_elapsed_time)
     
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/4-sat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("4 sat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (4): %0.10f seconds.\n" % total_elapsed_time)
     
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/5-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("5 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (5): %0.10f seconds.\n" % total_elapsed_time)
+    
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/6-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("6 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (6): %0.10f seconds.\n" % total_elapsed_time)
+    
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/7-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("7 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (7): %0.10f seconds.\n" % total_elapsed_time)
+    
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/8-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("8 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (8): %0.10f seconds.\n" % total_elapsed_time)
+    
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/9-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("9 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (9): %0.10f seconds.\n" % total_elapsed_time)
+    
+    start_time = time()
+    tupla = list_minisat2list_our_sat ('instancias/10-unsat.cnf')
+    total_elapsed_time = time() - start_time   
+    print("10 unsat: " , solve_SAT(tupla[0], tupla[1]))
+    print("Elapsed time (10): %0.10f seconds.\n" % total_elapsed_time)
+
+
 start_time = time()
 test()
 elapsed_time = time() - start_time   
