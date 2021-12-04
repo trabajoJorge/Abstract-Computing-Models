@@ -37,7 +37,6 @@ def solve_SAT_Recursivo(clauses, asig):
         if sat1!= "UNSATISFIABLE": return sat1
         sat2= solve_SAT_Recursivo(clauses, asig2) 
         if sat2!= "UNSATISFIABLE": return sat2
-
         return "UNSATISFIABLE"
 
 

@@ -30,20 +30,6 @@ def solve_SAT_Recursivo(clausulas, asig):
             asig[var]=0
             return solve_SAT_Recursivo(clausulas, asig)
 
-def isSatisfactible(clausulas, asig):
-    entra=0
-    for clausula in clausulas:
-        entra=0
-        for literal in clausula:
-            if literal>0 and asig[abs(literal)]==1: 
-                entra= 1
-                break
-            elif literal<0 and asig[abs(literal)]==0: 
-                entra= 1
-                break
-        if entra==0: 
-            return False
-    return True
     
 def test():
     clausulas = [[-2, -3, -1], [3, -2, 1], [-3, 2, 1],
