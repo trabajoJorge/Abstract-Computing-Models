@@ -9,6 +9,7 @@ def solve_SAT(num_variables, clausulas):
 
     sol= solve_SAT_Recursivo(clausulas, asig)
     
+    if sol=="UNSATISFIABLE": return "UNSATISFIABLE"
     # Asigno a false los valores que no he necesitado asignar
     sol= [0 if value==None else value for value in sol]
 
@@ -75,7 +76,7 @@ def test():
                [3, -2, 1], [2, 1, 3], [-3, -1, 2], [-3, -2, 1],
                [-1, 3, -2], [1, 2, -3], [-3, -1, 2], [2, -1, 3]]
     print (solve_SAT(3,clausulas))
-    assert solve_SAT(3,clausulas) == ['U', 'N', 'S', 'A', 'T', 'I', 'S', 'F', 'I', 'A', 'B', 'L', 'E']    
+    assert solve_SAT(3,clausulas) == "UNSATISFIABLE"   
      
     clausulas = [[4, -18, 19],[3, 18, -5],[-5, -8, -15],[-20, 7, -16],[10, -13, -7],
                [-12, -9, 17],[17, 19, 5],[-16, 9, 15], [11, -5, -14],[18, -10, 13],
@@ -96,14 +97,14 @@ def test():
                [-15, -6, -3],[-2, 3, -13],[12, 3, -2],[2, -2, -3, 17],[20, -15, -16],
                [-5, -17, -19],[-20, -18, 11],[-9, 1, -5],[-19, 9, 17],[17],[1],
                [4, -16, -5]]
-    assert solve_SAT(20, clausulas) == ['U', 'N', 'S', 'A', 'T', 'I', 'S', 'F', 'I', 'A', 'B', 'L', 'E']
+    assert solve_SAT(20, clausulas) == "UNSATISFIABLE"
     
     print("Tests passed") 
    
     clauses = [[-6, -4, -2, 6], [-5], [7], [1, -3], 
                [1, -4, -1, -7], [-6, -1], [1], [-7]]
     
-    assert solve_SAT(7, clauses) == ['U', 'N', 'S', 'A', 'T', 'I', 'S', 'F', 'I', 'A', 'B', 'L', 'E']
+    assert solve_SAT(7, clauses) == "UNSATISFIABLE"
 
     # Para probar el juego de pruebas
     start_time = time()
